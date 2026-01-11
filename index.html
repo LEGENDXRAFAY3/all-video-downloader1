@@ -1,1 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>All Video Downloader</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:
+        radial-gradient(circle at top left,#4f46e540,transparent 45%),
+        radial-gradient(circle at bottom right,#06b6d440,transparent 45%),
+        #070914;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:#fff;
+}
+
+.app{
+    width:390px;
+    background:rgba(15,18,45,0.95);
+    border-radius:28px;
+    padding:22px;
+    box-shadow:0 40px 80px rgba(0,0,0,.9);
+    position:relative;
+}
+
+/* 3 DOT MENU */
+.menu-btn{
+    position:absolute;
+    top:16px;
+    right:16px;
+    font-size:22px;
+    cursor:pointer;
+}
+
+.menu{
+    position:absolute;
+    top:46px;
+    right:16px;
+    background:#0f1538;
+    border-radius:14px;
+    width:220px;
+    display:none;
+    box-shadow:0 20px 40px rgba(0,0,0,.8);
+}
+
+.menu a{
+    display:block;
+    padding:12px 14px;
+    font-size:13px;
+    color:#e5e7eb;
+    text-decoration:none;
+    border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+.menu a:last-child{border-bottom:none}
+
+.menu a:hover{
+    background:#1b2160;
+}
+
+/* HEADER */
+.header{
+    text-align:center;
+    margin:12px 0 20px;
+}
+
+.header h1{
+    margin:0;
+    font-size:25px;
+}
+
+.header h1 span{color:#60a5fa}
+
+.header p{
+    margin-top:6px;
+    font-size:12px;
+    color:#9aa3ff;
+}
+
+/* TABS */
+.tabs{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding-bottom:6px;
+    margin-bottom:16px;
+}
+
+.tabs::-webkit-scrollbar{display:none}
+
+.tab{
+    padding:8px 14px;
+    border-radius:16px;
+    background:#1a1f3d;
+    font-size:12px;
+    cursor:pointer;
+}
+
+.tab.active{
+    background:linear-gradient(135deg,#6366f1,#38bdf8);
+}
+
+/* INPUT */
+.inputBox{
+    background:#0c1030;
+    border-radius:20px;
+    padding:6px;
+    margin-bottom:12px;
+}
+
+.inputBox input{
+    width:100%;
+    padding:15px;
+    background:transparent;
+    border:none;
+    outline:none;
+    color:#fff;
+    font-size:14px;
+}
+
+/* BUTTONS */
+button{
+    width:100%;
+    border:none;
+    border-radius:20px;
+    padding:15px;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.btnPaste{
+    background:#1a1f3d;
+    color:#c7d2fe;
+    margin-bottom:10px;
+}
+
+.btnDownload{
+    background:linear-gradient(135deg,#7c5cff,#22d3ee);
+    color:#fff;
+}
+
+/* STATUS */
+.status{
+    margin-top:14px;
+    text-align:center;
+    font-size:13px;
+    color:#a5b4fc;
+}
+
+.detected{
+    margin-top:6px;
+    text-align:center;
+    font-size:13px;
+}
+
+/* FOOTER */
+.footer{
+    margin-top:22px;
+    text-align:center;
+    font-size:11px;
+    color:#9ca3af;
+    line-height:1.6;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- 3 DOT BUTTON -->
+    <div class="menu-btn" onclick="toggleMenu()">⋮</div>
+
+    <!-- MENU -->
+    <div class="menu" id="menu">
+        <a href="#" onclick="shareApp()">📤 Share</a>
+        <a href="#" onclick="rateApp()">⭐ Rate our app</a>
+        <a href="https://chat.whatsapp.com/GqAi9Ulk2Z74VldSDUbhtu" target="_blank">
+            📱 Join WhatsApp Group
+        </a>
+        <a href="#" onclick="showIntro()">ℹ️ Introduction</a>
+        <a href="#" onclick="showFaq()">❓ FAQs</a>
+    </div>
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>ALL <span>VIDEO</span> DOWNLOADER</h1>
+        <p>Fast • HD • No Ads</p>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs" id="tabs">
+        <div class="tab active">TikTok</div>
+        <div class="tab">Instagram</div>
+        <div class="tab">Facebook</div>
+        <div class="tab">Pinterest</div>
+        <div class="tab">YouTube</div>
+        <div class="tab">Twitter</div>
+    </div>
+
+    <!-- INPUT -->
+    <div class="inputBox">
+        <input type="text" id="link" placeholder="Paste video link here">
+    </div>
+
+    <button class="btnPaste" onclick="pasteLink()">Paste Link</button>
+    <button class="btnDownload" onclick="downloadVideo()">Download Video</button>
+
+    <div class="status" id="status">Waiting for video link…</div>
+    <div class="detected" id="platform"></div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        © 2026 LEGEND X RAFAY | All rights reserved.<br>
+        Designed & developed by LEGEND X RAFAY.<br>
+        This website is for public use only. Misuse is strictly prohibited.
+    </div>
+
+</div>
+
+<script>
+function toggleMenu(){
+    const m=document.getElementById("menu");
+    m.style.display = m.style.display==="block" ? "none" : "block";
+}
+
+function shareApp(){
+    alert(
+        "Share this app with your friends!\n\n" +
+        "ALL VIDEO DOWNLOADER\n" +
+        "Designed by LEGEND X RAFAY © 2026"
+    );
+}
+
+function rateApp(){
+    alert(
+        "⭐ ⭐ ⭐ ⭐ ⭐\n\n" +
+        "Enjoying the app?\n" +
+        "Please give us a 5-star rating!"
+    );
+}
+
+function showIntro(){
+    alert(
+        "ALL VIDEO DOWNLOADER\n\n" +
+        "This application allows users to download HD videos from multiple platforms using a single video link.\n\n" +
+        "Supported platforms:\n" +
+        "• TikTok (No Watermark)\n" +
+        "• Instagram (Public videos)\n" +
+        "• Facebook\n" +
+        "• Pinterest\n" +
+        "• Twitter (X)\n\n" +
+        "Fast, secure and completely ad-free.\n\n" +
+        "Designed & developed by LEGEND X RAFAY © 2026"
+    );
+}
+
+function showFaq(){
+    alert(
+        "FAQs\n\n" +
+        "Q: Is this app free?\n" +
+        "A: Yes, it is completely free.\n\n" +
+        "Q: Are there any ads?\n" +
+        "A: No, this app is 100% ad-free.\n\n" +
+        "Q: Does it support HD videos?\n" +
+        "A: Yes, HD downloads are supported.\n\n" +
+        "Q: Can I download private videos?\n" +
+        "A: No, only public videos are supported."
+    );
+}
+
+const tabs=document.querySelectorAll(".tab");
+tabs.forEach(tab=>{
+    tab.onclick=()=>{
+        tabs.forEach(t=>t.classList.remove("active"));
+        tab.classList.add("active");
+    }
+});
+
+function pasteLink(){
+    navigator.clipboard.readText().then(text=>{
+        document.getElementById("link").value=text;
+        detectPlatform(text);
+    });
+}
+
+function detectPlatform(link){
+    let p="Unknown";
+    if(link.includes("tiktok")) p="TikTok";
+    else if(link.includes("instagram")) p="Instagram";
+    else if(link.includes("facebook")||link.includes("fb.watch")) p="Facebook";
+    else if(link.includes("pinterest")) p="Pinterest";
+    else if(link.includes("youtube")||link.includes("youtu.be")) p="YouTube";
+    else if(link.includes("twitter")||link.includes("x.com")) p="Twitter";
+
+    document.getElementById("platform").innerText="Detected Platform: "+p;
+}
+
+function downloadVideo(){
+    if(document.getElementById("link").value===""){
+        alert("Please paste a video link first");
+        return;
+    }
+    document.getElementById("status").innerText=
+    "Processing video… (backend required for HD download)";
+}
+</script>
+
+</body>
+  </html>
